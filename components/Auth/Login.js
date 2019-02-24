@@ -6,6 +6,15 @@ firebase.initializeApp(firebaseConfig);
 
 import { ScrollView, Button } from "react-native";
 class Login extends Component {
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user != null) {
+        // console.log(user);
+        this.props.navigation("App");
+      }
+    });
+  }
+
   FacebookLogIn = async () => {
     try {
       const {
@@ -15,14 +24,25 @@ class Login extends Component {
         permissions,
         declinedPermissions
       } = await Expo.Facebook.logInWithReadPermissionsAsync(fbkey, {
-        permissions: ["public_profile"]
+        permissions: ["email", "public_profile"]
       });
       if (type === "success") {
-        // Get the user's name using Facebook's Graph API
-        const response = await fetch(
-          `https://graph.facebook.com/me?access_token=${token}`
+        // Build Firebase credential with the Facebook access token.
+        const credential = await firebase.auth.FacebookAuthProvider.credential(
+          token
         );
-        Alert.alert("Logged in!", `Hi ${(await response.json()).name}!`);
+
+        // Sign in with credential from the Facebook user.
+        firebase
+          .auth()
+          .signInAndRetrieveDataWithCredential(credential)
+          .then(data => console.log(data))
+          .catch(error => {
+            // Handle Errors here.
+            Alert.alert("Try Again");
+          });
+
+        this.props.navigation("App");
       } else {
         // type === 'cancel'
       }
