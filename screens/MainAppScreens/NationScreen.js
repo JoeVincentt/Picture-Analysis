@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Camera, Permissions, FileSystem } from "expo";
 import { ClarifaiSDK } from "../../clarifai";
+import * as firebase from "firebase";
 
 export default class App extends React.Component {
   // static navigationOptions = {
@@ -95,6 +96,11 @@ export default class App extends React.Component {
     }
   };
 
+  logout = () => {
+    firebase.auth().signOut();
+    this.props.navigation.navigate("Auth");
+  };
+
   render() {
     return (
       <ScrollView>
@@ -165,6 +171,14 @@ export default class App extends React.Component {
             onPress={() => console.log(this.state.pictureAnalysis)}
           >
             <Text>State</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <TouchableOpacity
+            style={styles.CameraButton}
+            onPress={() => this.logout()}
+          >
+            <Text>LogOut</Text>
           </TouchableOpacity>
         </View>
         {/* {this.state.capturedPhoto ? (

@@ -7,12 +7,9 @@ import {
 
 import TabBarIcon from "../components/TabBarIcon";
 import LoginScreen from "../screens/AuthScreens/LoginScreen";
-import EmailPasswordLogin from "../screens/AuthScreens/EmailPasswordLogin";
-import RegisterScreen from "../screens/AuthScreens/RegisterScreen";
 
 const LoginStack = createStackNavigator({
-  Login: LoginScreen,
-  EmailPasswordLogin: EmailPasswordLogin
+  Login: LoginScreen
 });
 
 LoginStack.navigationOptions = {
@@ -25,21 +22,4 @@ LoginStack.navigationOptions = {
   )
 };
 
-const RegisterStack = createStackNavigator({
-  Register: RegisterScreen
-});
-
-RegisterStack.navigationOptions = {
-  tabBarLabel: "Register",
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? `ios-person-add` : "md-person-add"}
-    />
-  )
-};
-
-export default createBottomTabNavigator({
-  LoginStack,
-  RegisterStack
-});
+export default LoginStack;

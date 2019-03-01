@@ -1,15 +1,17 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
+import Camera from "../../components/Camera/Camera";
 
-export default class LinksScreen extends React.Component {
+class LinksScreen extends React.Component {
+  static navigationOptions = {
+    header: null
+  };
   render() {
-    return (
-      <View style={styles.container}>
-        <Text>Links</Text>
-      </View>
-    );
+    return <Camera />;
   }
 }
+
+export default LinksScreen;
 
 const styles = StyleSheet.create({
   container: {
