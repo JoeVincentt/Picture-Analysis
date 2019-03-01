@@ -11,18 +11,31 @@ import { Camera, Permissions, FileSystem } from "expo";
 import { ClarifaiSDK } from "../../clarifai";
 
 export default class App extends React.Component {
+  // static navigationOptions = {
+  //   header: null
+  // };
   state = {
     hasCameraPermission: null,
     isCapturing: false,
     accessCameraLabel: "Start",
     capturedPhoto: null,
-    pictureAnalysis: []
+    pictureAnalysis: [],
+    type: Camera.Constants.Type.back
   };
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === "granted" });
   }
+
+  flipCamera = () => {
+    this.setState({
+      type:
+        this.state.type === Camera.Constants.Type.back
+          ? Camera.Constants.Type.front
+          : Camera.Constants.Type.back
+    });
+  };
 
   async accessCamera() {
     if (this.state.isCapturing) {
@@ -42,27 +55,44 @@ export default class App extends React.Component {
     }
   }
 
-  predictPicture = async () => {
+  predictPicture = async (nation, general) => {
     // console.log(this.state.capturedPhoto);
     const base64pic = await FileSystem.readAsStringAsync(
       this.state.capturedPhoto,
       { encoding: FileSystem.EncodingTypes.Base64 }
     );
     // console.log(base64pic);
+    if (nation) {
+      ClarifaiSDK.models
+        .predict("c0c0ac362b03416da06ab3fa36fb58e3", { base64: base64pic })
+        .then(
+          function(response) {
+            console.log(response);
+            // do something with response
+          },
+          function(err) {
+            // there was an error
+          }
+        );
+    }
 
-    ClarifaiSDK.models
-      .predict(Clarifai.GENERAL_MODEL, { base64: base64pic })
-      .then(
-        response => {
-          // do something with response
-          this.setState({ pictureAnalysis: response.outputs[0].data.concepts });
-          console.log(response.outputs[0].data.concepts);
-        },
-        function(err) {
-          // there was an error
-          console.log(err);
-        }
-      );
+    if (general) {
+      ClarifaiSDK.models
+        .predict(Clarifai.GENERAL_MODEL, { base64: base64pic })
+        .then(
+          response => {
+            // do something with response
+            this.setState({
+              pictureAnalysis: response.outputs[0].data.concepts
+            });
+            console.log(response.outputs[0].data.concepts);
+          },
+          function(err) {
+            // there was an error
+            console.log(err);
+          }
+        );
+    }
   };
 
   render() {
@@ -96,8 +126,15 @@ export default class App extends React.Component {
                   ref={ref => {
                     this.camera = ref;
                   }}
-                  type={Camera.Constants.Type.back}
-                />
+                  type={this.state.type}
+                >
+                  <TouchableOpacity
+                    style={styles.CameraButton}
+                    onPress={() => this.flipCamera()}
+                  >
+                    <Text>Flip</Text>
+                  </TouchableOpacity>
+                </Camera>
               </View>
             )}
           </View>
@@ -111,9 +148,15 @@ export default class App extends React.Component {
         <View style={{ marginTop: 20 }}>
           <TouchableOpacity
             style={styles.CameraButton}
-            onPress={() => this.predictPicture()}
+            onPress={nation => this.predictPicture(nation)}
           >
             <Text>See Nationality</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.CameraButton}
+            onPress={general => this.predictPicture(null, general)}
+          >
+            <Text>See General</Text>
           </TouchableOpacity>
         </View>
         <View style={{ marginTop: 20 }}>
