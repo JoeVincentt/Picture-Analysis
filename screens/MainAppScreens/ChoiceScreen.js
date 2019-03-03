@@ -19,7 +19,6 @@ export default class ChoiceScreen extends React.Component {
   };
 
   predictPicture = async (demographic, general) => {
-    // console.log(this.state.capturedPhoto);
     this.setState({ isLoading: true });
     const base64pic = await FileSystem.readAsStringAsync(
       this.state.capturedPhoto,
@@ -76,7 +75,6 @@ export default class ChoiceScreen extends React.Component {
             this.props.navigation.navigate("Result", {
               generalAnalysis: this.state.generalAnalysis
             });
-            console.log(response.outputs[0].data.concepts);
           },
           err => {
             // there was an error

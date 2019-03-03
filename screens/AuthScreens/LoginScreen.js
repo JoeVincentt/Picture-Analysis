@@ -3,11 +3,16 @@ import { fbkey } from "../../key";
 import * as firebase from "firebase";
 import firebaseConfig from "../../firebase";
 firebase.initializeApp(firebaseConfig);
-import { Button, View, Text, ActivityIndicator, StatusBar } from "react-native";
+import { View, Text, ActivityIndicator, StatusBar } from "react-native";
+import { Container, Header, Content, Button, Icon } from "native-base";
 
 class LoginScreen extends Component {
   static navigationOptions = {
-    title: "Login"
+    title: "Fun Test",
+    headerStyle: {
+      backgroundColor: "black"
+    },
+    headerTintColor: "#fff"
   };
   constructor(props) {
     super(props);
@@ -70,7 +75,7 @@ class LoginScreen extends Component {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "lightgray"
+          backgroundColor: "black"
         }}
       >
         {this.state.isLoading ? (
@@ -79,7 +84,14 @@ class LoginScreen extends Component {
             <StatusBar barStyle="default" />
           </>
         ) : (
-          <Button title="Facebook Login" onPress={() => this.FacebookLogIn()} />
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Button iconLeft primary block onPress={() => this.FacebookLogIn()}>
+              <Icon name="cog" style={{ right: 10 }} />
+              <Text style={{ color: "#fff", fontSize: 22 }}>
+                Login with Facebook
+              </Text>
+            </Button>
+          </View>
         )}
       </View>
     );

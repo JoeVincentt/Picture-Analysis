@@ -8,9 +8,10 @@ import {
   Text,
   Left,
   Right,
-  Icon
+  Icon,
+  Button
 } from "native-base";
-export default class CardListExample extends Component {
+export default class ResultScreen extends Component {
   static navigationOptions = {
     headerStyle: {
       backgroundColor: "black"
@@ -27,6 +28,15 @@ export default class CardListExample extends Component {
       return (
         <Container>
           <Content>
+            <Button
+              iconLeft
+              primary
+              full
+              onPress={() => this.props.navigation.push("Camera")}
+            >
+              <Icon name="ios-repeat" style={{ right: 10 }} />
+              <Text>New Test</Text>
+            </Button>
             <List>
               {this.state.generalAnalysis.map(i => (
                 <ListItem key={i.id}>

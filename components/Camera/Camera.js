@@ -3,9 +3,11 @@ import {
   View,
   TouchableOpacity,
   Platform,
-  ImageBackground
+  ImageBackground,
+  Text
 } from "react-native";
 import { Camera, Permissions } from "expo";
+import * as firebase from "firebase";
 import { Header, Icon, Left, Right, Body } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -63,6 +65,11 @@ export default class App extends React.Component {
       console.log("camera ready");
     }
   }
+
+  logout = () => {
+    firebase.auth().signOut();
+    this.props.navigate("Auth");
+  };
 
   render() {
     return (
@@ -132,10 +139,12 @@ export default class App extends React.Component {
               >
                 <Left>
                   <View style={{ flexDirection: "row", flex: 4 }}>
-                    <MaterialCommunityIcons
-                      name="dna"
-                      style={{ color: "white", fontSize: 30 }}
-                    />
+                    <TouchableOpacity onPress={() => this.logout()}>
+                      <MaterialCommunityIcons
+                        name="dna"
+                        style={{ color: "white", fontSize: 30 }}
+                      />
+                    </TouchableOpacity>
                   </View>
                 </Left>
                 <Body />
@@ -178,10 +187,12 @@ export default class App extends React.Component {
                   }}
                 >
                   <View style={{ flexDirection: "row", flex: 4 }}>
-                    <MaterialCommunityIcons
-                      name="dna"
-                      style={{ color: "white", fontSize: 30 }}
-                    />
+                    <TouchableOpacity onPress={() => this.logout()}>
+                      <MaterialCommunityIcons
+                        name="dna"
+                        style={{ color: "white", fontSize: 30 }}
+                      />
+                    </TouchableOpacity>
                   </View>
 
                   <Icon
@@ -217,6 +228,13 @@ export default class App extends React.Component {
               }}
             >
               <View style={{ alignItems: "center" }}>
+                {this.state.isCapturing ? (
+                  <Text style={{ color: "red", fontSize: 20 }}>Press Now</Text>
+                ) : (
+                  <Text style={{ color: "white", fontSize: 20 }}>
+                    Get Ready
+                  </Text>
+                )}
                 <TouchableOpacity onPress={() => this.accessCamera()}>
                   <MaterialCommunityIcons
                     name="circle-outline"
