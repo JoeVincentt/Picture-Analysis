@@ -5,18 +5,20 @@ import {
   Content,
   List,
   ListItem,
-  Text,
   Left,
   Right,
   Icon,
-  Button
+  Button,
+  Footer
 } from "native-base";
+import { Text } from "react-native";
 export default class ResultScreen extends Component {
   static navigationOptions = {
-    headerStyle: {
-      backgroundColor: "black"
-    },
-    headerTintColor: "#fff"
+    header: null
+    // headerStyle: {
+    //   backgroundColor: "black"
+    // },
+    // headerTintColor: "#fff"
   };
   state = {
     generalAnalysis: this.props.navigation.getParam("generalAnalysis"),
@@ -28,6 +30,7 @@ export default class ResultScreen extends Component {
       return (
         <Container>
           <Content>
+            <Header />
             <Button
               iconLeft
               primary
@@ -35,7 +38,7 @@ export default class ResultScreen extends Component {
               onPress={() => this.props.navigation.push("Camera")}
             >
               <Icon name="ios-repeat" style={{ right: 10 }} />
-              <Text>New Test</Text>
+              <Text style={{ color: "white" }}>New Test</Text>
             </Button>
             <List>
               {this.state.generalAnalysis.map(i => (
@@ -59,6 +62,16 @@ export default class ResultScreen extends Component {
       return (
         <Container>
           <Content>
+            <Header />
+            <Button
+              iconLeft
+              primary
+              full
+              onPress={() => this.props.navigation.push("Camera")}
+            >
+              <Icon name="ios-repeat" style={{ right: 10 }} />
+              <Text style={{ color: "white" }}>New Test</Text>
+            </Button>
             <List>
               <ListItem itemDivider>
                 <Text>Age</Text>

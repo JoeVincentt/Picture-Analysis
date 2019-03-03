@@ -56,13 +56,11 @@ export default class App extends React.Component {
         capturedPhoto: photo.uri,
         cameraLoading: false
       });
-      console.log(this.state.capturedPhoto);
     } else {
       this.setState({
         isCapturing: true,
         capturedPhoto: null
       });
-      console.log("camera ready");
     }
   }
 
