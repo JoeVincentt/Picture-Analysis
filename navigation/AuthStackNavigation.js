@@ -1,25 +1,11 @@
 import React from "react";
 import { Platform } from "react-native";
-import {
-  createStackNavigator,
-  createBottomTabNavigator
-} from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 
-import TabBarIcon from "../components/TabBarIcon";
 import LoginScreen from "../screens/AuthScreens/LoginScreen";
 
 const LoginStack = createStackNavigator({
   Login: LoginScreen
 });
-
-LoginStack.navigationOptions = {
-  tabBarLabel: "Login",
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? `ios-log-in` : "md-log-in"}
-    />
-  )
-};
 
 export default LoginStack;

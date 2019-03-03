@@ -30,15 +30,12 @@ class LoginScreen extends Component {
 
   FacebookLogIn = async () => {
     try {
-      const {
-        type,
-        token,
-        expires,
-        permissions,
-        declinedPermissions
-      } = await Expo.Facebook.logInWithReadPermissionsAsync(fbkey, {
-        permissions: ["email", "public_profile"]
-      });
+      const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
+        fbkey,
+        {
+          permissions: ["email", "public_profile"]
+        }
+      );
       if (type === "success") {
         // Build Firebase credential with the Facebook access token.
         const credential = await firebase.auth.FacebookAuthProvider.credential(
