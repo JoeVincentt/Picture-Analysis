@@ -1,37 +1,23 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-  Image
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { Camera, Permissions, FileSystem } from "expo";
 import { ClarifaiSDK } from "../../clarifai";
 import * as firebase from "firebase";
-import {
-  Container,
-  Content,
-  Header,
-  Item,
-  Icon,
-  Input,
-  Button
-} from "native-base";
+import { Header, Icon, Left, Right, Body } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default class App extends React.Component {
-  // static navigationOptions = {
-  //   header: null
-  // };
+  static navigationOptions = {
+    header: null
+  };
   state = {
     hasCameraPermission: null,
     isCapturing: false,
     accessCameraLabel: "Start",
     capturedPhoto: null,
     pictureAnalysis: [],
-    type: Camera.Constants.Type.back
+    type: Camera.Constants.Type.back,
+    flashMode: Camera.Constants.FlashMode.off
   };
 
   async componentWillMount() {
@@ -45,6 +31,14 @@ export default class App extends React.Component {
         this.state.type === Camera.Constants.Type.back
           ? Camera.Constants.Type.front
           : Camera.Constants.Type.back
+    });
+  };
+  flashMode = () => {
+    this.setState({
+      flashMode:
+        this.state.flashMode === Camera.Constants.FlashMode.off
+          ? Camera.Constants.FlashMode.on
+          : Camera.Constants.FlashMode.off
     });
   };
 
@@ -72,113 +66,113 @@ export default class App extends React.Component {
         <Camera
           style={{ flex: 1, justifyContent: "space-between" }}
           type={this.state.type}
+          autoFocus
+          flashMode={this.state.flashMode}
+          ref={ref => {
+            this.camera = ref;
+          }}
         >
-          <Header
-            searchBar
-            rounded
+          {Platform.OS === "ios" ? (
+            <Header
+              style={{
+                position: "absolute",
+                backgroundColor: "transparent",
+                left: 0,
+                top: 0,
+                right: 0,
+                zIndex: 100,
+                alignItems: "center"
+              }}
+            >
+              <Left>
+                <View style={{ flexDirection: "row", flex: 4 }}>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigate("Choice")}
+                  >
+                    <Icon name="logo-snapchat" style={{ color: "white" }} />
+                  </TouchableOpacity>
+                </View>
+              </Left>
+              <Body />
+              <Right>
+                <Icon
+                  onPress={() => this.flashMode()}
+                  name={
+                    this.state.flashMode === Camera.Constants.FlashMode.off
+                      ? "ios-flash-off"
+                      : "ios-flash"
+                  }
+                  style={{ color: "white", fontWeight: "bold", right: 10 }}
+                />
+                <Icon
+                  onPress={() => this.flipCamera()}
+                  name="ios-reverse-camera"
+                  style={{ color: "white", fontWeight: "bold" }}
+                />
+              </Right>
+            </Header>
+          ) : (
+            <Header transparent>
+              <View
+                style={{
+                  flex: 1,
+                  position: "absolute",
+                  flexDirection: "row",
+                  backgroundColor: "transparent",
+                  justifyContent: "space-between",
+                  top: 45,
+                  left: 10,
+                  right: 10,
+                  alignItems: "center",
+                  zIndex: 100
+                }}
+              >
+                <View style={{ flexDirection: "row", flex: 4 }}>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigate("Choice")}
+                  >
+                    <Icon name="logo-snapchat" style={{ color: "white" }} />
+                  </TouchableOpacity>
+                </View>
+
+                <Icon
+                  onPress={() => this.flashMode()}
+                  name={
+                    this.state.flashMode === Camera.Constants.FlashMode.off
+                      ? "ios-flash-off"
+                      : "ios-flash"
+                  }
+                  style={{ color: "white", fontWeight: "bold", right: 10 }}
+                />
+                <Icon
+                  onPress={() => this.flipCamera()}
+                  name="ios-reverse-camera"
+                  style={{ color: "white", fontWeight: "bold" }}
+                />
+              </View>
+            </Header>
+          )}
+          <View
             style={{
-              position: "absolute",
-              backgroundColor: "transparent",
-              left: 0,
-              top: 0,
-              right: 0,
-              zIndex: 100,
+              flex: 2,
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              paddingHorizontal: 10,
+              marginBottom: 15,
               alignItems: "center"
             }}
           >
-            <View style={{ flexDirection: "row", flex: 4 }}>
-              <Icon name="logo-snapchat" style={{ color: "white" }} />
-              <Item style={{ backgroundColor: "transparent" }}>
-                <Icon
-                  name="ios-search"
-                  style={{ color: "white", fontSize: 24, fontWeight: "bold" }}
-                />
-
-                <Input placeholder="Search" placeholderTextColor="white" />
-              </Item>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                flex: 2,
-                justifyContent: "space-around"
-              }}
-            >
-              <Icon
-                name="ios-flash"
-                style={{ color: "white", fontWeight: "bold" }}
-              />
-              <Icon
-                onPress={() => {
-                  this.setState({
-                    type:
-                      this.state.type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                  });
-                }}
-                name="ios-reverse-camera"
-                style={{ color: "white", fontWeight: "bold" }}
-              />
-            </View>
-          </Header>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 10,
-              marginBottom: 15,
-              alignItems: "flex-end"
-            }}
-          >
-            <MaterialCommunityIcons
-              name="message-reply"
-              style={{ color: "white", fontSize: 36 }}
-            />
-
             <View style={{ alignItems: "center" }}>
-              <MaterialCommunityIcons
-                name="circle-outline"
-                style={{ color: "white", fontSize: 100 }}
-              />
-              <Icon
-                name="ios-images"
-                style={{ color: "white", fontSize: 36 }}
-              />
+              <TouchableOpacity onPress={() => this.accessCamera()}>
+                <MaterialCommunityIcons
+                  name="circle-outline"
+                  style={{ color: "white", fontSize: 100 }}
+                />
+              </TouchableOpacity>
             </View>
-            <MaterialCommunityIcons
-              name="google-circles-communities"
-              style={{ color: "white", fontSize: 36 }}
-            />
           </View>
         </Camera>
       </View>
-      //   <View style={{ flex: 1, height: "100%", width: "100%" }}>
-      //     <Camera
-      //       style={{ height: "100%", width: "100%" }}
-      //       ref={ref => {
-      //         this.camera = ref;
-      //       }}
-      //       type={this.state.type}
-      //     >
-      //       <View style={{ marginBottom: "auto", marginTop: "auto" }}>
-      //         <TouchableOpacity
-      //           style={styles.CameraButton}
-      //           onPress={() => this.flipCamera()}
-      //         >
-      //           <Text>Flip</Text>
-      //         </TouchableOpacity>
-      //         <TouchableOpacity
-      //           style={styles.CameraButton}
-      //           onPress={() => this.accessCamera()}
-      //         >
-      //           <Text>{this.state.accessCameraLabel}</Text>
-      //         </TouchableOpacity>
-      //       </View>
-      //     </Camera>
-      //   </View>
     );
   }
 }

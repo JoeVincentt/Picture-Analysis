@@ -1,13 +1,13 @@
 import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 
-import MainTabNavigator from "./MainTabNavigator";
+import MainStack from "./MainStackNavigation";
 import AuthStack from "./AuthStackNavigation";
 
 export default createAppContainer(
   createSwitchNavigator(
     {
-      App: MainTabNavigator,
+      App: MainStack,
       Auth: AuthStack
     },
     {

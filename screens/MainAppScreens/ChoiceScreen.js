@@ -11,7 +11,7 @@ import { Camera, Permissions, FileSystem } from "expo";
 import { ClarifaiSDK } from "../../clarifai";
 import * as firebase from "firebase";
 
-export default class App extends React.Component {
+export default class ChoiceScreen extends React.Component {
   // static navigationOptions = {
   //   header: null
   // };
@@ -171,6 +171,14 @@ export default class App extends React.Component {
             onPress={() => console.log(this.state.pictureAnalysis)}
           >
             <Text>State</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <TouchableOpacity
+            style={styles.CameraButton}
+            onPress={() => this.props.navigation.navigate("Result")}
+          >
+            <Text>Next Screen</Text>
           </TouchableOpacity>
         </View>
         <View style={{ marginTop: 20 }}>
